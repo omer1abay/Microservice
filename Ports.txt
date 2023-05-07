@@ -1,0 +1,9 @@
+Services
+catalogAPI : http://localhost:5011
+identityserver : http://localhost:5001
+photostock : http://localhost:5012
+basket : http://localhost:5013
+order : http://localhost:5015
+discount : http://localhost:5014
+fakepayment : http://localhost:5016
+gateway : http://localhost:5000

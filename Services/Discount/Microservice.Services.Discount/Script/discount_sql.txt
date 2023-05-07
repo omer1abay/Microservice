@@ -1,0 +1,7 @@
+﻿create table discount(
+	ID serial primary key, --bir bir artan = serial
+	UserId varchar(100) unique not null,
+	Rate smallint not null,
+	Code varchar(50) not null,
+	CreatedDate timestamp not null default CURRENT_TIMESTAMP
+) 

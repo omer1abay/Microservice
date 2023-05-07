@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\Microservice.Shared\Microservice.Shared.csproj" />
+    <ProjectReference Include="..\Microservice.Services.Order.Domain\Microservice.Services.Order.Domain.csproj" />
+    <ProjectReference Include="..\Microservice.Services.Order.Infrastructure\Microservice.Services.Order.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
