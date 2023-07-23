@@ -7,3 +7,4 @@ order : http://localhost:5015
 discount : http://localhost:5014
 fakepayment : http://localhost:5016
 gateway : http://localhost:5000
+web : http://localhost:5010
