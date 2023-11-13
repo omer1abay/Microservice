@@ -28,6 +28,7 @@ namespace Microservice.Services.Order.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetOrders()
         {
+            //It finds the IRequestHandler of this query type and executes the Handle method.
             var response = await _mediator.Send(new GetOrdersByUserIdQuery { UserId = _sharedIdentityService.GetUserId});
             return CreateActionResultInstance(response);
         }
@@ -35,6 +36,7 @@ namespace Microservice.Services.Order.API.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveOrder(CreateOrderCommand command)
         {
+            //It finds the IRequestHandler of this command type and executes the Handle method.
             var response = await _mediator.Send(command);
             return CreateActionResultInstance(response);
         }

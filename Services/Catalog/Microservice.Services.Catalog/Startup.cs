@@ -1,3 +1,4 @@
+using MassTransit;
 using Microservice.Services.Catalog.Services;
 using Microservice.Services.Catalog.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,6 +31,25 @@ namespace Microservice.Services.Catalog
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
+            //rabbitmq
+            services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    //default port'tan ayaða kalkacak 5672 ayaða kalkacak
+                    cfg.Host(Configuration["RabbitMQUrl"], "/", host =>
+                    {
+                        host.Username("guest"); //bu username ve password rabbitmq tarafýndan default geliyor
+                        host.Password("guest");
+                    });
+                });
+            });
+            services.AddMassTransitHostedService();
+            //
+
+
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICourseService, CourseService>();
             services.AddAutoMapper(typeof(Startup)); //Startup'ýn baðlý olduðu tüm mapper'larý tarar, Profile'dan inherit alan nesneleri tarar.

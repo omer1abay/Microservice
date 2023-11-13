@@ -1,5 +1,7 @@
 ﻿using Microservice.Web.Models;
 using Microservice.Web.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -47,7 +49,13 @@ namespace Microservice.Web.Controllers
             
         }
 
-
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            //refresh token silü
+            await _identityService.RevokeRefreshToken();
+            return RedirectToAction(nameof(HomeController.Index), "Home"); //anasayfaya gönder
+        }
 
     }
 }

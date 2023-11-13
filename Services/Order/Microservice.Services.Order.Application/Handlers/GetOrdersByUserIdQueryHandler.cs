@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Microservice.Services.Order.Application.Handlers
 {
-    //db'ye gidip veriyi alacak sınıf
+    //class to access db and retrieve data
     public class GetOrdersByUserIdQueryHandler : IRequestHandler<GetOrdersByUserIdQuery, ResponseDto<List<OrderDto>>>
     {
         private readonly OrderDbContext _context;

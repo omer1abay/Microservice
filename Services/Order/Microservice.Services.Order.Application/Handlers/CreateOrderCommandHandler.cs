@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Microservice.Services.Order.Application.Handlers
 {
-    //OrderDto orderDto = new(); //eğer default constructor varsa direkt new keyword'u ile kullanabiliriz C#9.0 ile gelen özellik
+    //OrderDto orderDto = new(); //If there is a default constructor, we can use it directly with the new keyword Feature introduced with C#9.0
     public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, ResponseDto<CreatedOrderDto>>
     {
         private readonly OrderDbContext _context;
@@ -24,7 +24,9 @@ namespace Microservice.Services.Order.Application.Handlers
 
         public async Task<ResponseDto<CreatedOrderDto>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            var newAddress = new Domain.OrderAggregate.Address(request.Address.Province,request.Address.District,request.Address.Street,request.Address.ZipCode,request.Address.Line);
+            var newAddress = new Domain.OrderAggregate.Address(request.Address.Province,
+                request.Address.District,request.Address.Street,
+                request.Address.ZipCode,request.Address.Line);
 
             var orders = new Domain.OrderAggregate.Order(request.BuyerId,newAddress);
 

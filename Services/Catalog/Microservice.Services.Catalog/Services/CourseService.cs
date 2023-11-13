@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using MassTransit;
 using Microservice.Services.Catalog.Dtos;
 using Microservice.Services.Catalog.Models;
 using Microservice.Services.Catalog.Settings;
 using Microservice.Shared.Dtos;
+using Microservice.Shared.Messages;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -16,14 +18,16 @@ namespace Microservice.Services.Catalog.Services
         private readonly IMongoCollection<Course> _courseCollection;
         private readonly IMongoCollection<Category> _categoryCollection;
         private IMapper _mapper;
+        private readonly IPublishEndpoint publishEndpoint;
 
-        public CourseService(IMapper mapper, IDatabaseSettings databaseSettings)
+        public CourseService(IMapper mapper, IDatabaseSettings databaseSettings, IPublishEndpoint publishEndpoint)
         {
             var client = new MongoClient(databaseSettings.ConnectionString);
             var database = client.GetDatabase(databaseSettings.DatabaseName);
             _courseCollection = database.GetCollection<Course>(databaseSettings.CourseCollectionName);
             _categoryCollection = database.GetCollection<Category>(databaseSettings.CategoryCollectionName);
             _mapper = mapper;
+            this.publishEndpoint = publishEndpoint;
         }
 
         public async Task<ResponseDto<List<CourseDto>>> GetAllAsync()
@@ -100,6 +104,12 @@ namespace Microservice.Services.Catalog.Services
             {
                 return ResponseDto<NoContent>.Failure("Course not found", 404);
             }
+
+            await publishEndpoint.Publish<CourseNameChangedEvent>(new CourseNameChangedEvent
+            {
+                CourseId = updateCourse.Id,
+                UpdateName = courseUpdateDto.Name,
+            });
 
             return ResponseDto<NoContent>.Success(204);
 

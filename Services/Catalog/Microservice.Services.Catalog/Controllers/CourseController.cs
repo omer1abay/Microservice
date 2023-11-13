@@ -28,7 +28,7 @@ namespace Microservice.Services.Catalog.Controllers
             return CreateActionResultInstance(response); //generic vermedik çünkü kendi parametresindeki generic ifadeden otomatik çıkacak.
         }
 
-        [HttpGet("{id}")] //course/id
+        [HttpGet("GetByUserId/{id}")] //course/id
         public async Task<IActionResult> GetByUserId(string id)
         {
             var response = await _courseService.GetAllByUserId(id);

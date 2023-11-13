@@ -1,3 +1,4 @@
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -29,7 +30,21 @@ namespace Microservice.Services.FakePayment
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            //rabbitmq
+            services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    //default port'tan ayaða kalkacak 5672 ayaða kalkacak
+                    cfg.Host(Configuration["RabbitMQUrl"], "/", host =>
+                     {
+                         host.Username("guest"); //bu username ve password rabbitmq tarafýndan default geliyor
+                         host.Password("guest");
+                     });
+                });
+            });
+            services.AddMassTransitHostedService();
+            //
             var requireAuthorizePolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 
             //eðer payload'da sadece okuma yetkisi bekleseydik bir policy daha oluþturacaktýk.

@@ -1,3 +1,4 @@
+using Microservice.Web.Handler;
 using Microservice.Web.Models;
 using Microservice.Web.Services;
 using Microservice.Web.Services.Interfaces;
@@ -28,10 +29,15 @@ namespace Microservice.Web
         {
             services.AddHttpContextAccessor();
             var serviceApiSettings = Configuration.GetSection("SerivceApiSettings").Get<ServiceApiSettings>();
+            services.AddScoped<ResourceOwnerPasswordTokenHandler>();
             services.AddHttpClient<IIdentityService,IdentityService>();
             services.AddHttpClient<IUserService,UserService>(opt =>
             {
                 opt.BaseAddress = new Uri(serviceApiSettings.IdentityBaseUri);
+            }).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>(); //handler'ýmýzý ekledik
+            services.AddHttpClient<ICatalogService,CatalogService>(opts =>
+            {
+                opts.BaseAddress = new Uri($"{serviceApiSettings.GatewayBaseUri}/{serviceApiSettings.Catalog.Path}");
             });
             services.Configure<ClientSettings>(Configuration.GetSection("ClientSettings"));
             services.Configure<ServiceApiSettings>(Configuration.GetSection("SerivceApiSettings"));

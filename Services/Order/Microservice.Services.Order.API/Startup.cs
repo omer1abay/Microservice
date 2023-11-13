@@ -1,4 +1,6 @@
+using MassTransit;
 using MediatR;
+using Microservice.Services.Order.Application.Consumer;
 using Microservice.Services.Order.Infrastructure;
 using Microservice.Shared.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,6 +35,39 @@ namespace Microservice.Services.Order.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //consumer'ý haber edeceðiz
+            //rabbitmq
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<CreateOrderMessageCommandConsumer>();
+                x.AddConsumer<CourseNameChangedEventConsumer>();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    //default port'tan ayaða kalkacak 5672 ayaða kalkacak
+                    cfg.Host(Configuration["RabbitMQUrl"], "/", host =>
+                    {
+                        host.Username("guest"); //bu username ve password rabbitmq tarafýndan default geliyor
+                        host.Password("guest");
+                    });
+
+                    cfg.ReceiveEndpoint("order-created-service",e =>
+                    {
+                        //okuma iþlemi command için
+                        e.ConfigureConsumer<CreateOrderMessageCommandConsumer>(context);
+                    });
+
+                    //exchange'den okuyup map'leme iþlemi event için
+                    cfg.ReceiveEndpoint("course-name-changed-event-order", e =>
+                    {
+                        e.ConfigureConsumer<CourseNameChangedEventConsumer>(context);
+                    });
+
+                });
+            });
+            services.AddMassTransitHostedService();
+            //
+
+
 
             var requireAuthorizePolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 
